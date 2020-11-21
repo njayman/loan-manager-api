@@ -6,9 +6,26 @@ const LoanTypeSchema = new Schema({
         type: String,
         required: true,
     },
-    maxvalue: {
-        type: Number
+    details: {
+        type: String,
+    },
+    maxloan: {
+        type: Number,
+        required: true
+    },
+    installments: {
+        type: Number,
+        required: true
+    },
+    mininstallmentfee: {
+        type: Number,
+        required: true
+    },
+    guarentor: {
+        type: Boolean,
+        default: false
     }
+
 })
 
 module.exports = model("LoanType", LoanTypeSchema);

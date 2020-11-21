@@ -70,9 +70,8 @@ exports.deleteUser = async (req, res) => {
 
 exports.addLoan = async (req, res) => {
     try {
-        const user = new Loans(req.body)
-        await user.save();
-        res.send({ success: true, message: `Created ${user.fullname}` })
+        await Users.updateOne({ _id: req.params.id }, { $push: { loans: req.body } })
+        res.send({ success: true, message: `Successfully added ${req.body.loanname}` })
     } catch (error) {
         res.send({ success: false, message: error.message })
     }
@@ -163,12 +162,28 @@ exports.loandata = async (req, res) => {
 
 exports.auditloan = async (req, res) => {
     try {
-        const prevloan = await Loans.findOne({ _id: req.params.id })
-        await Loans.updateOne({ _id: req.params.id }, {
-            $set: { 'paidback': Number(req.body.paid) + Number(prevloan.paidback) },
-            $push: { audits: { auditamount: req.body.paid } },
+        const prevloan = await Users.findOne({ _id: req.params.id })
+        await Users.updateOne({ _id: req.params.id, 'loans._id': req.params.lid }, {
+            "$push": {
+                'loans.$.audits': req.body
+            }
         })
-        res.send({ success: true, message: `Successfully audited ${req.body.paid}` })
+        res.send({ success: true, message: `Successfully audited ${req.body.amount}` })
+    } catch (error) {
+        res.send({ success: false, message: error.message })
+    }
+}
+
+exports.getaudits = async (req, res) => {
+    try {
+        const { loans } = await Users.findOne({ _id: req.params.id, 'loans._id': req.params.lid })
+        //const audits = user.loans.find({ _id: req.params.id, 'loans._id': req.params.lid })
+        const targetloans = await loans.filter(ln => {
+            return req.params.lid === ln._id
+        })
+        console.log(loans)
+        console.log(targetloans)
+        res.send({ success: true })
     } catch (error) {
         res.send({ success: false, message: error.message })
     }
