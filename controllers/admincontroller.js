@@ -35,8 +35,15 @@ exports.deleteLoanType = async (req, res) => {
 
 exports.addUser = async (req, res) => {
     try {
-        const user = new Users(req.body)
-        await user.save();
+        const newUser = req.body
+        let saltround = 10
+        let salt = await bcrypt.genSalt(saltround)
+        const randompassword = Math.random().toString(36).substring(7) + Math.random().toString(36).substring(7)
+        console.log(randompassword)
+        const hashedPassword = await bcrypt.hash(randompassword, salt)
+        newUser.password = hashedPassword
+        const user = new Users(newUser)
+        await user.save()
         res.send({ success: true, message: `Created ${user.fullname}` })
     } catch (error) {
         res.send({ success: false, message: error.message })
@@ -207,7 +214,6 @@ exports.addAdmin = async (req, res) => {
         const newadmin = req.body;
         //console.log(usr)
         let saltround = 10
-        bcrypt
         let salt = await bcrypt.genSalt(saltround)
         //const randompassword = Math.random().toString().slice(-8)
         //console.log(randompassword)
