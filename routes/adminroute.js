@@ -18,7 +18,8 @@ const {
     loandata,
     auditloan,
     loanstatus,
-    getaudits
+    getaudits,
+    changePassword
 } = require('../controllers/admincontroller.js')
 const router = express.Router()
 
@@ -39,6 +40,7 @@ router.delete('/delete/loan/:id', deleteLoan)
 router.post('/addadmin', addAdmin)
 router.get('/getadmins', getAdmins)
 router.post('/loginadmin', loginAdmin)
+router.post('/changepassword/:id', changePassword)
 
 router.get('/get/audits/:id/:lid', getaudits)
 router.get('/get/loadstate', loanstatus)

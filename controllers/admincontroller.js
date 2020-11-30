@@ -259,3 +259,19 @@ exports.loginAdmin = async (req, res) => {
         res.send({ success: false, message: error.message })
     }
 }
+
+exports.changePassword = async (req, res) => {
+    try {
+        const newPassword = req.body.newPassword;
+        //console.log(usr)
+        let saltround = 10
+        let salt = await bcrypt.genSalt(saltround)
+        //const randompassword = Math.random().toString().slice(-8)
+        //console.log(randompassword)
+        const hashedPassword = await bcrypt.hash(newPassword, salt)
+        await Admins.updateOne({ _id: req.params.id }, { $set: { password: hashedPassword } })
+        res.send({ success: true, message: `Successfully updated password for admin` })
+    } catch (error) {
+        res.send({ success: false, message: error.message })
+    }
+}
