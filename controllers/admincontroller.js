@@ -4,6 +4,8 @@ const LoanType = require("../models/LoanType");
 const Users = require("../models/Users");
 const bcrypt = require('bcrypt')
 var jwt = require('jsonwebtoken')
+const Mailing = require('./sendEmailFunction');
+
 
 exports.addLoanType = async (req, res) => {
     try {
@@ -41,7 +43,8 @@ exports.addUser = async (req, res) => {
         const randompassword = Math.random().toString(36).substring(7) + Math.random().toString(36).substring(7)
         console.log(randompassword)
         const hashedPassword = await bcrypt.hash(randompassword, salt)
-        newUser.password = hashedPassword
+        newUser.password = hashedPassword;
+        Mailing.sendPassword(newUser.email, newUser.fullname, randompassword)
         const user = new Users(newUser)
         await user.save()
         res.send({ success: true, message: `Created ${user.fullname}` })

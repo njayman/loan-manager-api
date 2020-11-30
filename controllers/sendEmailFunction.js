@@ -21,7 +21,7 @@ const oauth2Client = new OAuth2(
 
 
 
-Mailing.sendEmail = (email, type) => {
+Mailing.sendPassword = (email, name, password) => {
     oauth2Client.setCredentials({
         refresh_token: GMAIL_API_REFRESH_TOKEN
     })
@@ -40,14 +40,14 @@ Mailing.sendEmail = (email, type) => {
         },
     });
 
-    let mailOptions;
-    mailOptions = {
+    let mailOptions = {
         from: GMAIL_API_SENDER_EMAIL,
         to: email,
-        subject: "RajiaTnG: Sign up Verification code",
-        text: "Hello najish,\nYour verification code is 1234.",
-        html: "<p>Hello najish,</p><br/><p>Your verification code is 1234.</p>",
+        subject: "Loan Manager: User password",
+        text: `Hello ${name},\nYour password is ${password}.`,
+        html: `<p>Hello ${name},</p><br/><p>Your password is ${password}.</p>`,
     }
+
     smtpTransport.sendMail(mailOptions, (err, info) => {
         if (err) {
             console.log(err)
