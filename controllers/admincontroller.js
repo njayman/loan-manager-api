@@ -1,6 +1,9 @@
+const Admins = require("../models/Admins");
 const Loans = require("../models/Loans");
 const LoanType = require("../models/LoanType");
 const Users = require("../models/Users");
+const bcrypt = require('bcrypt')
+var jwt = require('jsonwebtoken')
 
 exports.addLoanType = async (req, res) => {
     try {
@@ -194,6 +197,64 @@ exports.loanstatus = async (req, res) => {
         const loans = await Loans.find()
         const users = await Users.find()
         res.send({ success: true, status: { loan: loans.length, user: users.length } })
+    } catch (error) {
+        res.send({ success: false, message: error.message })
+    }
+}
+
+exports.addAdmin = async (req, res) => {
+    try {
+        const newadmin = req.body;
+        //console.log(usr)
+        let saltround = 10
+        bcrypt
+        let salt = await bcrypt.genSalt(saltround)
+        //const randompassword = Math.random().toString().slice(-8)
+        //console.log(randompassword)
+        const hashedPassword = await bcrypt.hash(newadmin.password, salt)
+        newadmin.password = hashedPassword
+        const admin = new Admins(newadmin)
+        await admin.save()
+        res.send({ success: true, message: `Successfully added admin ${req.body.name}` })
+    } catch (error) {
+        res.send({ success: false, message: error.message })
+    }
+}
+
+exports.getAdmins = async (req, res) => {
+    try {
+        const admins = await Admins.find()
+        res.send({ success: true, admins: admins })
+    } catch (error) {
+        res.send({ success: false, message: error.message })
+    }
+}
+
+exports.loginAdmin = async (req, res) => {
+    try {
+        const adminFound = await Admins.exists({ email: req.body.email })
+        if (adminFound) {
+            const admin = await Admins.findOne({ email: req.body.email })
+            const passwordMatched = await bcrypt.compare(req.body.password, admin.password)
+            if (passwordMatched) {
+                const adminToken = jwt.sign({
+                    id: admin._id,
+                    fullname: admin.name,
+                    email: admin.email,
+                    role: "admin"
+                },
+                    process.env.JWTSECRET,
+                    {
+                        expiresIn: 2678400
+                    }
+                )
+                res.send({ success: true, message: `Successfully logged in as ${admin.fullname}`, token: adminToken })
+            } else {
+                res.send({ success: false, message: "Password doesn't match!" })
+            }
+        } else {
+            res.send({ success: false, message: `No user found with email ${req.body.email}` })
+        }
     } catch (error) {
         res.send({ success: false, message: error.message })
     }

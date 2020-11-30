@@ -66,6 +66,13 @@ const UserSchema = new Schema({
     },
     loans: {
         type: [LoanSchema]
+    },
+    type: {
+        type: String,
+        default: "user",
+    },
+    password: {
+        type: String,
     }
 })
 

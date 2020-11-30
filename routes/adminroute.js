@@ -11,6 +11,9 @@ const {
     getLoan,
     getLoans,
     deleteLoan,
+    addAdmin,
+    getAdmins,
+    loginAdmin,
     userdata,
     loandata,
     auditloan,
@@ -32,6 +35,10 @@ router.put("/add/loan/:id", addLoan);
 router.get('/get/loans', getLoans)
 router.get('/get/loan/:id', getLoan)
 router.delete('/delete/loan/:id', deleteLoan)
+
+router.post('/addadmin', addAdmin)
+router.get('/getadmins', getAdmins)
+router.post('/loginadmin', loginAdmin)
 
 router.get('/get/audits/:id/:lid', getaudits)
 router.get('/get/loadstate', loanstatus)

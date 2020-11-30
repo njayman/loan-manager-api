@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const adminrouter = require('./routes/adminroute.js')
+const userroute = require('./routes/userroute')
 
 const app = express();
 app.use(cors());
@@ -20,6 +21,7 @@ db.on("open", () => {
 });
 
 app.use('/api/admin', adminrouter)
+app.use('/api/user', userroute)
 
 app.listen(PORT, () => {
     console.log(`Server is up and running on port ${PORT}`);
