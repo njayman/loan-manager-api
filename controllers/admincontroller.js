@@ -44,7 +44,7 @@ exports.addUser = async (req, res) => {
         console.log(randompassword)
         const hashedPassword = await bcrypt.hash(randompassword, salt)
         newUser.password = hashedPassword;
-        Mailing.sendPassword(newUser.email, newUser.fullname, randompassword)
+        //Mailing.sendPassword(newUser.email, newUser.fullname, randompassword)
         const user = new Users(newUser)
         await user.save()
         res.send({ success: true, message: `Created ${user.fullname}` })
