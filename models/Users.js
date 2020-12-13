@@ -67,6 +67,7 @@ const UserSchema = new Schema({
     loans: {
         type: [LoanSchema]
     },
+    loanforms: [],
     type: {
         type: String,
         default: "user",

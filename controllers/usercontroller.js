@@ -1,6 +1,7 @@
 const User = require('../models/Users')
 const bcrypt = require('bcrypt')
 var jwt = require('jsonwebtoken');
+const LoanType = require('../models/LoanType');
 
 exports.checkemail = async (req, res) => {
     try {
@@ -67,6 +68,32 @@ exports.getUser = async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id })
         res.send({ success: true, user: user })
+    } catch (error) {
+        res.send({ success: false, message: error.message })
+    }
+}
+
+exports.getLoanType = async (req, res) => {
+    try {
+        const loantypes = await LoanType.find()
+        res.send({ success: true, loantypes: loantypes })
+    } catch (error) {
+        res.send({ success: false, message: error.message })
+    }
+}
+
+exports.getLoanInfo = async (req, res) => {
+    try {
+        const { loans } = await User.findOne({ _id: req.params.id })
+        res.send({ success: true, loaninfo: loans })
+    } catch (error) {
+        res.send({ success: false, message: error.message })
+    }
+}
+
+exports.requestLoan = async (req, res) => {
+    try {
+        await User.findOneAndUpdate({ _id: req.params.id })
     } catch (error) {
         res.send({ success: false, message: error.message })
     }
