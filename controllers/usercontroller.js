@@ -91,6 +91,7 @@ exports.getLoanInfo = async (req, res) => {
     }
 }
 
+
 exports.requestLoan = async (req, res) => {
     try {
         await User.findOneAndUpdate({ _id: req.params.id })
